@@ -1,24 +1,23 @@
-const fetchData = async (url) => {
-  const request = await fetch(url);
+const fetchData = async (
+  resource,
+  url = "https://jsonplaceholder.typicode.com/"
+) => {
+  const request = await fetch(url + resource);
   return request.json();
 };
 
 const getPost = async (id) => {
-  const post = await fetchData(
-    `https://jsonplaceholder.typicode.com/posts/${id}`
-  );
-  const commentsOfThePost = await fetchData(
-    `https://jsonplaceholder.typicode.com/posts/${id}/comments`
-  );
+  const post = await fetchData(`posts/${id}`);
+  const comments = await fetchData(`posts/${id}/comments`);
 
-  return { ...post, comment: commentsOfThePost };
+  return { ...post, comments };
 };
 
 (async () => {
   const [users, posts, comments] = await Promise.all([
-    fetchData("https://jsonplaceholder.typicode.com/users"),
-    fetchData("https://jsonplaceholder.typicode.com/posts"),
-    fetchData("https://jsonplaceholder.typicode.com/comments"),
+    fetchData("users"),
+    fetchData("posts"),
+    fetchData("comments"),
   ]);
 
   ///// 3
