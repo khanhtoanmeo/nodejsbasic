@@ -7,9 +7,10 @@ const fetchData = async (
 };
 
 const getPost = async (id) => {
-  const post = await fetchData(`posts/${id}`);
-  const comments = await fetchData(`posts/${id}/comments`);
-
+  const [post, comments] = await Promise.all([
+    fetchData(`posts/${id}`),
+    fetchData(`posts/${id}/comments`),
+  ]);
   return { ...post, comments };
 };
 
@@ -29,12 +30,8 @@ const getPost = async (id) => {
       username,
       email,
       posts: posts.filter((post) => post.userId === user.id),
+      comments: comments.filter((comment) => comment.email === email),
     };
-    userToReturn.comments = userToReturn.posts.reduce(
-      (acc, cur) =>
-        acc.concat(comments.filter((comment) => comment.postId === cur.id)),
-      []
-    );
     return userToReturn;
   });
 
